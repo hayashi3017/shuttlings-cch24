@@ -3,18 +3,38 @@ use std::{
     fmt,
     net::{Ipv4Addr, Ipv6Addr},
     str::FromStr,
+    sync::Arc,
 };
 
 use axum::{
-    extract::Query,
+    extract::{Query, State},
     http::{header, HeaderMap, StatusCode},
     response::{IntoResponse, Response},
     routing::{get, post},
     Router,
 };
 use cargo_manifest::Manifest;
+use leaky_bucket::RateLimiter;
 use serde::{de, Deserialize, Deserializer};
+use tokio::time::Duration;
 use toml::Value;
+
+struct AppState {
+    pub milk_amount: RateLimiter,
+}
+
+impl AppState {
+    pub fn new() -> AppState {
+        AppState {
+            milk_amount: RateLimiter::builder()
+                .initial(5)
+                .interval(Duration::from_secs(1))
+                .refill(1)
+                .max(5)
+                .build(),
+        }
+    }
+}
 
 async fn hello_world() -> &'static str {
     "Hello, bird!"
@@ -199,8 +219,21 @@ async fn parse_manifest(headers: HeaderMap, body: String) -> Response {
     }
 }
 
+// WIP: milk isn't refilled in every interval. It looks like bug, because in tokio runtime it works well.
+async fn withdraw_milk(State(state): State<Arc<AppState>>) -> Response {
+    dbg!(state.milk_amount.balance());
+    dbg!(state.milk_amount.refill());
+    if state.milk_amount.balance() >= 1 {
+        state.milk_amount.acquire_one().await;
+        (StatusCode::OK, "Milk withdrawn\n").into_response()
+    } else {
+        (StatusCode::TOO_MANY_REQUESTS, "No milk available\n").into_response()
+    }
+}
+
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
+    let shared_state = Arc::new(AppState::new());
     let router = Router::new()
         .route("/", get(hello_world))
         .route("/-1/seek", get(with_status_and_array_headers))
@@ -208,7 +241,9 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/2/key", get(extract_ipv4_key))
         .route("/2/v6/dest", get(ipv6_encryption))
         .route("/2/v6/key", get(extract_ipv6_key))
-        .route("/5/manifest", post(parse_manifest));
+        .route("/5/manifest", post(parse_manifest))
+        .route("/9/milk", post(withdraw_milk))
+        .with_state(shared_state);
 
     Ok(router.into())
 }
