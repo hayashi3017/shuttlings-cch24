@@ -3,7 +3,7 @@ use std::{
     fmt,
     net::{Ipv4Addr, Ipv6Addr},
     str::FromStr,
-    sync::Arc,
+    sync::{Arc, RwLock},
 };
 
 use axum::{
@@ -20,18 +20,20 @@ use tokio::time::Duration;
 use toml::Value;
 
 struct AppState {
-    pub milk_amount: RateLimiter,
+    pub milk_amount: RwLock<RateLimiter>,
 }
 
 impl AppState {
     pub fn new() -> AppState {
         AppState {
-            milk_amount: RateLimiter::builder()
-                .initial(5)
-                .interval(Duration::from_secs(1))
-                .refill(1)
-                .max(5)
-                .build(),
+            milk_amount: RwLock::new(
+                RateLimiter::builder()
+                    .initial(5)
+                    .interval(Duration::from_secs(1))
+                    .refill(1)
+                    .max(5)
+                    .build(),
+            ),
         }
     }
 }
@@ -219,16 +221,11 @@ async fn parse_manifest(headers: HeaderMap, body: String) -> Response {
     }
 }
 
-// WIP: milk isn't refilled in every interval. It looks like bug, because in tokio runtime it works well.
 async fn withdraw_milk(State(state): State<Arc<AppState>>) -> Response {
-    dbg!(state.milk_amount.balance());
-    dbg!(state.milk_amount.refill());
-    if state.milk_amount.balance() >= 1 {
-        state.milk_amount.acquire_one().await;
-        (StatusCode::OK, "Milk withdrawn\n").into_response()
-    } else {
-        (StatusCode::TOO_MANY_REQUESTS, "No milk available\n").into_response()
+    if !state.milk_amount.read().unwrap().try_acquire(1) {
+        return (StatusCode::TOO_MANY_REQUESTS, "No milk available\n").into_response();
     }
+    (StatusCode::OK, "Milk withdrawn\n").into_response()
 }
 
 #[shuttle_runtime::main]
