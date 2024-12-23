@@ -26,16 +26,18 @@ struct AppState {
 impl AppState {
     pub fn new() -> AppState {
         AppState {
-            milk_amount: RwLock::new(
-                RateLimiter::builder()
-                    .initial(5)
-                    .interval(Duration::from_secs(1))
-                    .refill(1)
-                    .max(5)
-                    .build(),
-            ),
+            milk_amount: RwLock::new(create_bucket()),
         }
     }
+}
+
+fn create_bucket() -> RateLimiter {
+    RateLimiter::builder()
+        .initial(5)
+        .interval(Duration::from_secs(1))
+        .refill(1)
+        .max(5)
+        .build()
 }
 
 async fn hello_world() -> &'static str {
@@ -221,11 +223,60 @@ async fn parse_manifest(headers: HeaderMap, body: String) -> Response {
     }
 }
 
-async fn withdraw_milk(State(state): State<Arc<AppState>>) -> Response {
+#[derive(Debug, Deserialize)]
+struct MilkTank {
+    liters: Option<f32>,
+    gallons: Option<f32>,
+    litres: Option<f32>,
+    pints: Option<f32>,
+}
+
+async fn withdraw_milk(
+    headers: HeaderMap,
+    State(state): State<Arc<AppState>>,
+    body: String,
+) -> Result<String, impl IntoResponse> {
     if !state.milk_amount.read().unwrap().try_acquire(1) {
-        return (StatusCode::TOO_MANY_REQUESTS, "No milk available\n").into_response();
+        return Err((StatusCode::TOO_MANY_REQUESTS, "No milk available\n").into_response());
     }
-    (StatusCode::OK, "Milk withdrawn\n").into_response()
+
+    let content_type = headers
+        .get(header::CONTENT_TYPE)
+        .and_then(|x| x.to_str().ok());
+
+    if content_type == Some("application/json") {
+        let json = serde_json::from_str::<MilkTank>(&body)
+            .map_err(|_| StatusCode::BAD_REQUEST.into_response())?;
+
+        let fields = [json.gallons, json.liters, json.litres, json.pints];
+        if fields.iter().all(Option::is_none) || fields.iter().filter(|el| el.is_some()).count() > 1
+        {
+            return Err(StatusCode::BAD_REQUEST.into_response());
+        }
+
+        match (json.liters, json.gallons, json.litres, json.pints) {
+            (None, Some(gallons), None, None) => {
+                return Ok(format!("{{\"litters\":{}}}\n", gallons * 3.785_412_5))
+            }
+            (Some(litters), None, None, None) => {
+                return Ok(format!("{{\"gallons\":{}}}\n", litters / 3.785_412_5));
+            }
+            (None, None, Some(litres), None) => {
+                return Ok(format!("{{\"pints\":{}}}\n", litres * 1.759_754))
+            }
+            (None, None, None, Some(pints)) => {
+                return Ok(format!("{{\"litres\":{}}}\n", pints / 1.759_754))
+            }
+            _ => unreachable!()
+        }
+    } else {
+        Ok(format!("Milk withdrawn\n"))
+    }
+}
+
+async fn refill_milk(State(state): State<Arc<AppState>>) -> Response {
+    *state.milk_amount.write().unwrap() = create_bucket();
+    StatusCode::OK.into_response()
 }
 
 #[shuttle_runtime::main]
@@ -240,6 +291,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/2/v6/key", get(extract_ipv6_key))
         .route("/5/manifest", post(parse_manifest))
         .route("/9/milk", post(withdraw_milk))
+        .route("/9/refill", post(refill_milk))
         .with_state(shared_state);
 
     Ok(router.into())
