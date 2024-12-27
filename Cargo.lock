@@ -1686,6 +1686,7 @@ dependencies = [
  "axum 0.7.9",
  "cargo-manifest",
  "leaky-bucket",
+ "parking_lot",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -1693,6 +1694,8 @@ dependencies = [
  "shuttle-runtime",
  "tokio",
  "toml",
+ "tracing",
+ "tracing-subscriber",
 ]
 
 [[package]]
