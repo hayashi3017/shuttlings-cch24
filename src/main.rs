@@ -15,7 +15,8 @@ use axum::{
 };
 use cargo_manifest::Manifest;
 use leaky_bucket::RateLimiter;
-use parking_lot::{lock_api::RwLockUpgradableReadGuard, RwLock};
+use parking_lot::{lock_api::RwLockUpgradableReadGuard, Mutex, RwLock};
+use rand::{rngs::StdRng, Rng, SeedableRng};
 use serde::{de, Deserialize, Deserializer};
 use tokio::time::Duration;
 use toml::Value;
@@ -24,6 +25,7 @@ use tracing::info;
 struct AppState {
     pub milk_amount: RwLock<RateLimiter>,
     pub board: RwLock<Board>,
+    pub rand: Mutex<StdRng>,
 }
 
 impl AppState {
@@ -31,6 +33,7 @@ impl AppState {
         AppState {
             milk_amount: RwLock::new(create_bucket()),
             board: RwLock::new(Board::new()),
+            rand: Mutex::new(StdRng::seed_from_u64(2024)),
         }
     }
 }
@@ -174,6 +177,16 @@ impl Board {
             return self.to_string();
         }
     }
+
+    fn gen_random(rand: &mut StdRng) -> Self {
+        let mut res = Self::default();
+        for i in 0..4 {
+            for j in 0..4 {
+                res.content[i][j] = Tile::gen_random(rand);
+            }
+        }
+        res
+    }
 }
 
 impl Display for Board {
@@ -222,6 +235,16 @@ impl From<Team> for Tile {
         match value {
             Team::Cookie => Tile::Cookie,
             Team::Milk => Tile::Milk,
+        }
+    }
+}
+
+impl Tile {
+    fn gen_random(rng: &mut StdRng) -> Self {
+        if rng.gen() {
+            Tile::Cookie
+        } else {
+            Tile::Milk
         }
     }
 }
@@ -496,6 +519,7 @@ async fn current_board(State(state): State<Arc<AppState>>) -> String {
 
 async fn reset_board(State(state): State<Arc<AppState>>) -> String {
     *state.board.write() = Board::new();
+    *state.rand.lock() = StdRng::seed_from_u64(2024);
     state.board.read().to_string()
 }
 
@@ -532,6 +556,12 @@ async fn place_item(
     Ok(String::new())
 }
 
+async fn random(State(state): State<Arc<AppState>>) -> String {
+    let random_board = Board::gen_random(&mut state.rand.lock());
+    *state.board.write() = random_board;
+    state.board.read().print_result()
+}
+
 #[shuttle_runtime::main]
 async fn main() -> shuttle_axum::ShuttleAxum {
     let shared_state = Arc::new(AppState::new());
@@ -548,6 +578,7 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/12/board", get(current_board))
         .route("/12/reset", post(reset_board))
         .route("/12/place/:team/:column", post(place_item))
+        .route("/12/random-board", post(random))
         .with_state(shared_state);
 
     Ok(router.into())
