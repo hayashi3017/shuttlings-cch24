@@ -10,7 +10,7 @@ use day::{
     day02::{extract_ipv4_key, extract_ipv6_key, ipv4_encryption, ipv6_encryption},
     day05::parse_manifest,
     day09::{create_bucket, refill_milk, withdraw_milk},
-    day12::{current_board, place_item, random, reset_board, Board},
+    day12::{current_board, place_item, random, reset_board, Board}, day16::{unwrap_present, wrap_present},
 };
 use leaky_bucket::RateLimiter;
 use parking_lot::{Mutex, RwLock};
@@ -51,6 +51,8 @@ async fn main() -> shuttle_axum::ShuttleAxum {
         .route("/12/reset", post(reset_board))
         .route("/12/place/:team/:column", post(place_item))
         .route("/12/random-board", post(random))
+        .route("/16/wrap", post(wrap_present))
+        .route("/16/unwrap", get(unwrap_present))
         .with_state(shared_state);
 
     Ok(router.into())
