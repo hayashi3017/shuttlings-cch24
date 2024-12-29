@@ -64,7 +64,7 @@ pub async fn parse_manifest(
                     };
                     let raw_quantity = raw_quantity.to_string();
                     let trim_quantity = raw_quantity.trim_matches('"');
-                    let Ok(item) = trim_item.parse::<String>();
+                    let item = trim_item.to_string();
                     let Ok(quantity) = trim_quantity.parse::<u32>() else {
                         continue;
                     };
