@@ -269,7 +269,7 @@ pub async fn place_item(
     let board = state.board.upgradable_read();
 
     if board.columns_filled(column) || board.ended() {
-        return Err(StatusCode::SERVICE_UNAVAILABLE.into_response());
+        return Err((StatusCode::SERVICE_UNAVAILABLE, board.print_result()).into_response());
     }
     // board.set_tile(column, team);
     let mut board = RwLockUpgradableReadGuard::upgrade(board);
