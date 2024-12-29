@@ -52,7 +52,7 @@ pub async fn withdraw_milk(
 
         match (json.liters, json.gallons, json.litres, json.pints) {
             (None, Some(gallons), None, None) => {
-                return Ok(format!("{{\"litters\":{}}}\n", gallons * 3.785_412_5))
+                return Ok(format!("{{\"liters\":{}}}\n", gallons * 3.785_412_5))
             }
             (Some(litters), None, None, None) => {
                 return Ok(format!("{{\"gallons\":{}}}\n", litters / 3.785_412_5));
