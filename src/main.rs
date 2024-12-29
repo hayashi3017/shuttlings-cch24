@@ -13,11 +13,14 @@ use day::{
     day12::{current_board, place_item, random, reset_board, Board},
     day16::{unwrap_present, wrap_present},
     day19::{cite_by_id, draft, remove_by_id, reset, undo_by_id},
+    day23::{ornament, present, star},
 };
 use leaky_bucket::RateLimiter;
 use parking_lot::{Mutex, RwLock};
 use rand::{rngs::StdRng, SeedableRng};
 use sqlx::PgPool;
+use tower::ServiceBuilder;
+use tower_http::services::ServeDir;
 
 pub mod day;
 
@@ -48,7 +51,7 @@ async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum
         .expect("Failed to run migrations");
 
     let shared_state = Arc::new(AppState::new(pool));
-    let router = Router::new()
+    let api_router = Router::new()
         .route("/", get(hello_world))
         .route("/-1/seek", get(with_status_and_array_headers))
         .route("/2/dest", get(ipv4_encryption))
@@ -69,7 +72,16 @@ async fn main(#[shuttle_shared_db::Postgres] pool: sqlx::PgPool) -> shuttle_axum
         .route("/19/cite/:id", get(cite_by_id))
         .route("/19/remove/:id", delete(remove_by_id))
         .route("/19/undo/:id", put(undo_by_id))
+        .route("/23/star", get(star))
+        .route("/23/present/:color", get(present))
+        .route("/23/ornament/:state/:n", get(ornament))
         .with_state(shared_state);
+
+    let assets_service = ServiceBuilder::new().service(ServeDir::new("assets"));
+
+    let router = Router::new()
+        .nest_service("/", api_router)
+        .nest_service("/assets", assets_service);
 
     Ok(router.into())
 }
