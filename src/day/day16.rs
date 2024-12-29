@@ -1,5 +1,4 @@
 use axum::{
-    body::Body,
     http::{header::CONTENT_TYPE, HeaderMap, StatusCode},
     response::IntoResponse,
     Json,
