@@ -1,0 +1,579 @@
+{
+	"info": {
+		"_postman_id": "2458e61d-53a5-41f4-acca-fd4e1269479a",
+		"name": "shuttlings-cch24",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "21463085"
+	},
+	"item": [
+		{
+			"name": "Day5",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/toml"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n[package]\nname = \"not-a-gift-order\"\nauthors = [\"Not Santa\"]\nkeywords = [\"Christmas 2024\"]\n\n[[package.metadata.orders]]\nitem = \"Toy car\"\nquantity = 2\n\n[[package.metadata.orders]]\nitem = \"Lego brick\"\nquantity = 230\n",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/5/manifest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"5",
+								"manifest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/toml"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n[package]\nname = false\nauthors = [\"Not Santa\"]\nkeywords = [\"Christmas 2024\"]\n",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/5/manifest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"5",
+								"manifest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/toml"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n[package]\nname = \"grass\"\nauthors = [\"A vegan cow\"]\nkeywords = [\"Moooooo\"]\n",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/5/manifest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"5",
+								"manifest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/toml"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n[package]\nname = \"grass\"\nauthors = [\"A vegan cow\"]\nkeywords = [\"Moooooo\"]\n",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/5/manifest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"5",
+								"manifest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request Copy 2",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/toml"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n[package]\nname = \"not-a-gift-order\"\nauthors = [\"Not Santa\"]\nkeywords = [\"Christmas 2024\"]\n\n[[package.metadata.orders]]\nitem = \"Toy car\"\nquantity = 2\n\n[[package.metadata.orders]]\nitem = \"Lego brick\"\nquantity = 1.5\n\n[[package.metadata.orders]]\nitem = \"Doll\"\nquantity = 2\n\n[[package.metadata.orders]]\nquantity = 5\nitem = \"Cookie:::\\n\"\n\n[[package.metadata.orders]]\nitem = \"Thing\"\ncount = 3\n",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/5/manifest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"5",
+								"manifest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "text/html"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "<h1>Hello, bird!</h1>",
+							"options": {
+								"raw": {
+									"language": "html"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/5/manifest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"5",
+								"manifest"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/yaml"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\npackage:\n  name: big-chungus-sleigh\n  version: \"2.0.24\"\n  metadata:\n    orders:\n      - item: \"Toy train\"\n        quantity: 5\n  rust-version: \"1.69\"\n  keywords:\n    - \"Christmas 2024\"\n",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/5/manifest",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"5",
+								"manifest"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Day9",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"gallons\": -2.000000000000001}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/9/milk",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"9",
+								"milk"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Day12",
+			"item": [
+				{
+					"name": "board",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/12/board",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"12",
+								"board"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset board",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/12/reset",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"12",
+								"reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/12/place/cookie/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"12",
+								"place",
+								"cookie",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/12/random-board",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"12",
+								"random-board"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Day16",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"cookie is delicious?\": true}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/16/wrap",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"16",
+								"wrap"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Cookie",
+								"value": "gift=(JWT)"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8000/16/unwrap",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"16",
+								"unwrap"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Day19",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"author\":\"Santa\",\"quote\":\"Ho ho ho!\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/19/draft",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"19",
+								"draft"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\"author\":\"Santa\",\"quote\":\"I changed my mind...\"}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8000/19/undo/bc75bf8a-37b0-4358-8d1d-6b9bd27a0e34",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"19",
+								"undo",
+								"bc75bf8a-37b0-4358-8d1d-6b9bd27a0e34"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/19/cite/0bf731ff-4ee1-44af-852a-f3eae772df19",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"19",
+								"cite",
+								"0bf731ff-4ee1-44af-852a-f3eae772df19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/19/remove/0bf731ff-4ee1-44af-852a-f3eae772df19",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"19",
+								"remove",
+								"0bf731ff-4ee1-44af-852a-f3eae772df19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "New Request",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/19/reset",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8000",
+							"path": [
+								"19",
+								"reset"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
